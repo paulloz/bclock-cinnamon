@@ -1,0 +1,8 @@
+{
+    "description": "A simple binary clock",
+    "max-instances": -1,
+    "dangerous": false,
+    "uuid": "bclock@pauljoannon.com",
+    "name": "B-Clock",
+    "icon": "view-restore"
+}
