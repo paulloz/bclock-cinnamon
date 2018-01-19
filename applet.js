@@ -19,6 +19,7 @@ BClock.prototype = {
     _init: function(metadata, orientation, panel_height, instance_id) {
         Applet.Applet.prototype._init.call(this, orientation, panel_height, instance_id);
 
+        this.setAllowedLayout(Applet.AllowedLayout.HORIZONTAL);
         this.actor.remove_style_class_name('applet-box');
 
         let spacing = 1 * global.ui_scale;
