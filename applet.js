@@ -79,6 +79,8 @@ BClock.prototype = {
             }
         }
 
+        for (let idx of [0, 2, 4, 6]) this.cells[idx].style_class = '';
+
         nextUpdate = 1;
 
         return nextUpdate;
