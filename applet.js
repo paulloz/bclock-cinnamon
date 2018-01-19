@@ -5,6 +5,7 @@ const St = imports.gi.St;
 const Mainloop = imports.mainloop;
 const Lang = imports.lang;
 const UPowerGlib = imports.gi.UPowerGlib;
+const Settings = imports.ui.settings;
 
 function BClock(metadata, orientation, panel_height, instance_id) {
     this._init(metadata, orientation, panel_height, instance_id);
@@ -21,6 +22,9 @@ BClock.prototype = {
 
         this.setAllowedLayout(Applet.AllowedLayout.HORIZONTAL);
         this.actor.remove_style_class_name('applet-box');
+
+        this.settings = new Settings.AppletSettings(this, metadata.uuid, instance_id);
+        this.settings.bind("top-to-bottom", "topToBottom", this.on_settings_changed);
 
         let spacing = 1 * global.ui_scale;
         let height = (panel_height - (3 * spacing)) / 4;
@@ -70,9 +74,18 @@ BClock.prototype = {
 
         let cur_col = 0;
 
+        let cond = row => row >= 0;
+        let inc = -1;
+        let start = ROWS - 1;
+        if (this.topToBottom) {
+            cond = row => row < ROWS;
+            inc = 1;
+            start = 0;
+        }
+
         for (let time of [now.getHours(), now.getMinutes(), now.getSeconds()]) {
             for (let x of [parseInt(time / 10), parseInt(time % 10)]) {
-                for (let row = ROWS - 1; row >= 0; --row) {
+                for (let row = start; cond(row); row += inc) {
                     this.cells[(COLUMNS * row) + cur_col].style_class = x & 1 ? 'on' : 'off';
                     x >>>= 1;
                 }
@@ -80,7 +93,7 @@ BClock.prototype = {
             }
         }
 
-        for (let idx of [0, 2, 4, 6]) this.cells[idx].style_class = '';
+        for (let idx of this.topToBottom ? [18, 20, 22, 12] : [0, 2, 4, 6]) this.cells[idx].style_class = '';
 
         nextUpdate = 1;
 
@@ -96,7 +109,9 @@ BClock.prototype = {
         if (this._periodicTimeoutId) {
             Mainloop.source_remove(this._periodicTimeoutId);
         }
-    }
+    },
+
+    on_settings_changed: function() { }
 };
 
 function main(metadata, orientation, panel_height, instance_id) {

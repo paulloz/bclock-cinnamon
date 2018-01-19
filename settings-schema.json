@@ -1,0 +1,8 @@
+{
+    "top-to-bottom": {
+        "type": "switch",
+        "default": false,
+        "description": "Read from top to bottom (instead of bottom to top)",
+        "tooltip": ""
+    }
+}
